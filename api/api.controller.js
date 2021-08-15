@@ -4,11 +4,12 @@ const yaml = require('js-yaml');
 
 module.exports.domainResponses = async(req,res)=>{
     try {
+        var responseList = []
         let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
         let data = yaml.load(fileContents);
-    
-        console.log(data['responses']["utter_ask_civil_number"][0]['text']);
-        res.send({success:true,data:data['responses']})
+        responseList.push(data['responses'])
+        // console.log(data['responses']["utter_ask_civil_number"][0]['text']);
+        res.send({success:true,data:responseList})
     } catch (error) {
         console.log(error);
         res.status(400).send({success:false,error:error})
