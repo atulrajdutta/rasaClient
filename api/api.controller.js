@@ -7,7 +7,11 @@ module.exports.domainResponses = async(req,res)=>{
         var responseList = []
         let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
         let data = yaml.load(fileContents);
-        responseList.push(data['responses'])
+        let responseData = data['responses'];
+        for(var i in responseData)
+    responseList.push(i, responseData[i]);
+        
+        // responseList.push(data['responses'])
         // console.log(data['responses']["utter_ask_civil_number"][0]['text']);
         res.send({success:true,data:responseList})
     } catch (error) {
