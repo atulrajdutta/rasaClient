@@ -31,7 +31,7 @@ module.exports.domainResponsesSave = async(req,res)=>{
                 console.log(err);
             }
         });
-        res.send({success:true,data:data['responses']})
+        res.send({success:true,message:"Response Saved!"})
     } catch (error) {
         console.log(error);
         res.status(400).send({success:false,error:error})
