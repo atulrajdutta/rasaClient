@@ -1,7 +1,7 @@
 const request = require('request-promise');
 const fs = require('fs');
 const yaml = require('js-yaml');
-
+const { exec } = require('child_process');
 module.exports.domainResponses = async(req,res)=>{
     try {
         // var responseList = []
@@ -41,4 +41,49 @@ module.exports.domainResponsesSave = async(req,res)=>{
         res.status(400).send({success:false,error:error})
 
     }
+}
+
+module.exports.trainModel = async(req,res)=>{
+    try {
+        exec('bash -i  '+process.cwd()+'/train.sh',
+        (error, stdout, stderr) => {
+            console.log(stdout);
+            console.log(stderr);
+            if (error !== null) {
+                console.log(`exec error: ${error}`);
+            }
+            res.send({success:true,message:"Model Trained Successfully!"})
+
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).send({success:false,error:error})
+}
+}
+
+module.exports.useTrainedModel = async(req,res)=>{
+    try{
+        let model = process.env.modelfile+req.body.model;
+        let modelUrl= process.env.rasaApi+'model/'+req.body.model;
+        console.log(modelUrl);
+        await request.put(`${process.env.rasaApi}model`,
+        {
+            json: {
+                
+                    model_file: model,
+                    model_server: {
+                    url: modelUrl,
+                    wait_time_between_pulls: 0
+                    }
+                
+        }
+        })
+        res.send({success:true,message:"Model Activated"})
+    }
+
+    catch (error) {
+        console.log(error);
+        res.status(400).send({success:false,error:error})
+}
 }

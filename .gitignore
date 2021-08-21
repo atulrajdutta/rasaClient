@@ -141,3 +141,6 @@ dmypy.json
 
 # node_modules
 node_modules
+
+# shell script 
+.sh
