@@ -62,28 +62,28 @@ module.exports.trainModel = async(req,res)=>{
 }
 }
 
-module.exports.useTrainedModel = async(req,res)=>{
-    try{
-        let model = process.env.modelfile+req.body.model;
-        let modelUrl= process.env.rasaApi+'model/'+req.body.model;
-        console.log(modelUrl);
-        await request.put(`${process.env.rasaApi}model`,
-        {
-            json: {
+// module.exports.useTrainedModel = async(req,res)=>{
+//     try{
+//         let model = process.env.modelfile+req.body.model;
+//         let modelUrl= process.env.rasaApi+'model/'+req.body.model;
+//         console.log(modelUrl);
+//         await request.put(`${process.env.rasaApi}model`,
+//         {
+//             json: {
                 
-                    model_file: model,
-                    model_server: {
-                    url: modelUrl,
-                    wait_time_between_pulls: 0
-                    }
+//                     model_file: model,
+//                     model_server: {
+//                     url: modelUrl,
+//                     wait_time_between_pulls: 0
+//                     }
                 
-        }
-        })
-        res.send({success:true,message:"Model Activated"})
-    }
+//         }
+//         })
+//         res.send({success:true,message:"Model Activated"})
+//     }
 
-    catch (error) {
-        console.log(error);
-        res.status(400).send({success:false,error:error})
-}
-}
+//     catch (error) {
+//         console.log(error);
+//         res.status(400).send({success:false,error:error})
+// }
+// }
