@@ -106,11 +106,11 @@ module.exports.faqIntent = async(req,res)=>{
             if (faqResponse[i]['intent'] == 'faq/'+req.body.faqName){
                 
                 response.faq = faqResponse[i]['examples'];
-                response.res = domainResponse['utter_faq/'+req.body.faq][0]['text']
+                response.res = domainResponse['utter_faq/'+req.body.faqName][0]['text'];
                 }
             
         }
-        if (!req.body.faq){
+        if (!req.body.faqName){
             response.intents= nluData;
         }
         res.send(response)
