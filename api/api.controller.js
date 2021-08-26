@@ -101,7 +101,7 @@ module.exports.faqIntent = async(req,res)=>{
         let nluData = []
         let response = {success:true};
         for (var i = 0; i < faqResponse.length; i++) {
-            nluData.push(faqResponse[i]['intent']);
+            nluData.push(faqResponse[i]['intent'].slice(4));
             // console.log(nluData);
             if (faqResponse[i]['intent'] == 'faq/'+req.body.faqName){
                 
