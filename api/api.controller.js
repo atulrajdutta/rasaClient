@@ -8,7 +8,6 @@ module.exports.domainResponses = async(req,res)=>{
         let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
         let data = yaml.load(fileContents);
         let responseData = data['responses'];
-    
         // responseList.push(responseData);
         
         // responseList.push(data['responses'])
@@ -87,3 +86,74 @@ module.exports.trainModel = async(req,res)=>{
 //         res.status(400).send({success:false,error:error})
 // }
 // }
+
+
+module.exports.faqIntent = async(req,res)=>{
+    try {
+        let fileFaq = fs.readFileSync(process.cwd()+'/faq.yml', 'utf8');
+        let faqData = yaml.load(fileFaq);
+        let faqResponse = faqData['nlu'];
+
+        let fileResponse = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let responseData = yaml.load(fileResponse);
+        let domainResponse = responseData['responses']
+
+        let nluData = []
+        let response = {success:true};
+        for (var i = 0; i < faqResponse.length; i++) {
+            nluData.push(faqResponse[i]['intent']);
+            // console.log(nluData);
+            if (faqResponse[i]['intent'] == 'faq/'+req.body.faqName){
+                
+                response.faq = faqResponse[i]['examples'];
+                response.res = domainResponse['utter_faq/'+req.body.faq][0]['text']
+                }
+            
+        }
+        if (!req.body.faq){
+            response.intents= nluData;
+        }
+        res.send(response)
+
+        // responseList.push(responseData);
+        
+        // responseList.push(data['responses'])
+        // console.log(data['responses']["utter_ask_civil_number"][0]['text']);
+        
+        }
+    catch (error) {
+            console.log(error);
+            res.status(400).send({success:false,error:error})
+            
+    }
+    }
+
+module.exports.faqSave = async(req,res)=>{
+    try {
+        let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let data = yaml.load(fileContents);
+        let domainData = {}
+        let faqName = 'utter_faq/'+req.body.faqName;
+        let resText = {'text':req.body.response};
+        // domainData[faqName] = [resText];
+        data["responses"][faqName] = [resText];
+        console.log(data["responses"])
+
+
+
+
+        // data['responses'][responseName][0]['text'] = req.body.response;
+    
+        // fs.writeFile(process.cwd()+'/domain.yml', yaml.dump(data), (err) => {
+        //     if (err) {
+        //         console.log("Can not write to the file")
+        //         console.log(err);
+        //     }
+        // });
+        // res.send({success:true,message:"Response Saved!"})
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({success:false,error:error})
+
+    }
+}
