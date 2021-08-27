@@ -17,12 +17,16 @@
   },
   "homepage": "https://github.com/atulrajdutta/rasaClient#readme",
   "dependencies": {
+    "cloudinary": "^1.26.3",
+    "connect-multiparty": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "ip": "^1.1.5",
     "js-yaml": "^4.1.0",
     "json2yaml": "^1.1.0",
+    "mongoose": "^6.0.2",
+    "multiparty": "^4.2.2",
     "read-data": "^1.1.0",
     "read-yaml": "^1.1.0",
     "request-promise": "^4.2.6"

@@ -2,12 +2,17 @@ const request = require('request-promise');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { exec } = require('child_process');
+require('dotenv').config();
+
+
+
 module.exports.domainResponses = async(req,res)=>{
     try {
         // var responseList = []
         let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
         let data = yaml.load(fileContents);
         let responseData = data['responses'];
+
         // responseList.push(responseData);
         
         // responseList.push(data['responses'])
@@ -128,29 +133,68 @@ module.exports.faqIntent = async(req,res)=>{
     }
     }
 
+
 module.exports.faqSave = async(req,res)=>{
     try {
-        let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
-        let data = yaml.load(fileContents);
-        let domainData = {}
-        let faqName = 'utter_faq/'+req.body.faqName;
-        let resText = {'text':req.body.response};
-        // domainData[faqName] = [resText];
-        data["responses"][faqName] = [resText];
-        console.log(data["responses"])
 
+        // fetch Response............................
+        if (req.body.faqName){
+        let filedomain = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let domainData = yaml.load(filedomain);
+        let domainName = 'utter_faq/'+req.body.faqName;
+        let resText = {'text':req.body.response};        
+        let domainKey = Object.keys(domainData["responses"]);
+        if (domainKey.includes(domainName)){
+            domainData['responses'][domainName][0]['text'] = req.body.response;
+        }
+        else{
+        domainData["responses"][domainName] = [resText];
+        }
 
+        // Fetch Faq.....................................
 
+        let fileFaq = fs.readFileSync(process.cwd()+'/faq.yml', 'utf8');
+        let faqData = yaml.load(fileFaq);
+        let faqName = 'faq/'+req.body.faqName;
+        let faqs = {'intent':faqName};
+       
+        let faqKey = faqData["nlu"];
+        let faqList = [];
 
-        // data['responses'][responseName][0]['text'] = req.body.response;
-    
-        // fs.writeFile(process.cwd()+'/domain.yml', yaml.dump(data), (err) => {
-        //     if (err) {
-        //         console.log("Can not write to the file")
-        //         console.log(err);
-        //     }
-        // });
-        // res.send({success:true,message:"Response Saved!"})
+        for (var i = 0; i < faqKey.length; i++) {
+            faqList.push(faqKey[i]['intent']);
+            if (faqKey[i]['intent'] == 'faq/'+req.body.faqName){
+                faqKey[i]['intent'] = 'faq/'+req.body.faqName
+                faqKey[i]["examples"] = req.body.faqs
+            }
+        }
+        if (!faqList.includes(faqName))
+        {
+            faqs.examples = req.body.faqs;
+            faqData["nlu"].push(faqs);
+        // console.log("yourfaq",faqData)           
+        }
+        
+        //Write faqs to faq.yml.................................
+        
+        fs.writeFile(process.cwd()+'/faq.yml', yaml.dump(faqData), (err) => {
+            if (err) {
+                console.log("Can not write to the nlu file")
+                console.log(err);
+            }
+        });
+
+        //Write Response to domain.yml.......................... 
+
+        fs.writeFile(process.cwd()+'/domain.yml', yaml.dump(domainData), (err) => {
+            if (err) {
+                console.log("Can not write to the domain file")
+                console.log(err);
+            }
+        });
+        }
+
+        res.send({success:true,message:"Response Saved!"})
     } catch (error) {
         console.log(error);
         res.status(400).send({success:false,error:error})
