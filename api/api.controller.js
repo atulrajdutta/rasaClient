@@ -68,7 +68,7 @@ module.exports.trainModel = async(req,res)=>{
 
 module.exports.useTrainedModel = async(req,res)=>{
     try{
-        let model = process.env.modelfile+req.body.model;
+        let model = process.env.modelfile+"models/"+req.body.model;
         let modelUrl= process.env.rasaApi+'model/'+req.body.model;
         console.log(modelUrl);
         await request.put(`${process.env.rasaApi}model`,
