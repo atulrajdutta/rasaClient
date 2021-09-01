@@ -75,11 +75,7 @@ module.exports.useTrainedModel = async(req,res)=>{
         {
             json: {
                 
-                    model_file: model,
-                    model_server: {
-                    url: modelUrl,
-                    wait_time_between_pulls: 0
-                    }
+                    model_file: model
                 
         }
         })
@@ -90,6 +86,23 @@ module.exports.useTrainedModel = async(req,res)=>{
         console.log(error);
         res.status(400).send({success:false,error:error})
 }
+}
+
+module.exports.modelList = async(req,res)=>{
+    try {
+
+        const modelFolder = process.env.modelfile+"models/";
+        let models = []
+        fs.readdir(modelFolder, (err, files) => {
+        console.log(files);
+        res.send({success:true,data:files})
+    });
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({success:false,error:error})
+
+    }
 }
 
 
