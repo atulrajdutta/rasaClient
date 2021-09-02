@@ -9,7 +9,7 @@ require('dotenv').config();
 module.exports.domainResponses = async(req,res)=>{
     try {
         // var responseList = []
-        let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let fileContents = fs.readFileSync(process.env.modelfile+'/domain.yml', 'utf8');
         let data = yaml.load(fileContents);
         let responseData = data['responses'];
 
@@ -27,13 +27,13 @@ module.exports.domainResponses = async(req,res)=>{
 
 module.exports.domainResponsesSave = async(req,res)=>{
     try {
-        let fileContents = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let fileContents = fs.readFileSync(process.env.modelfile+'/domain.yml', 'utf8');
         let data = yaml.load(fileContents);
         let responseName = req.body.responseName;   
         console.log(responseName);
         data['responses'][responseName][0]['text'] = req.body.newResponse;
     
-        fs.writeFile(process.cwd()+'/domain.yml', yaml.dump(data), (err) => {
+        fs.writeFile(process.env.modelfile+'/domain.yml', yaml.dump(data), (err) => {
             if (err) {
                 console.log("Can not write to the file")
                 console.log(err);
@@ -108,11 +108,11 @@ module.exports.modelList = async(req,res)=>{
 
 module.exports.faqIntent = async(req,res)=>{
     try {
-        let fileFaq = fs.readFileSync(process.cwd()+'/faq.yml', 'utf8');
+        let fileFaq = fs.readFileSync(process.env.modelfile+'/data/faq.yml', 'utf8');
         let faqData = yaml.load(fileFaq);
         let faqResponse = faqData['nlu'];
 
-        let fileResponse = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let fileResponse = fs.readFileSync(process.env.modelfile+'/domain.yml', 'utf8');
         let responseData = yaml.load(fileResponse);
         let domainResponse = responseData['responses']
 
@@ -152,7 +152,7 @@ module.exports.faqSave = async(req,res)=>{
 
         // fetch Response............................
         if (req.body.faqName){
-        let filedomain = fs.readFileSync(process.cwd()+'/domain.yml', 'utf8');
+        let filedomain = fs.readFileSync(process.env.modelfile+'/domain.yml', 'utf8');
         let domainData = yaml.load(filedomain);
         let domainName = 'utter_faq/'+req.body.faqName;
         let resText = {'text':req.body.response};        
@@ -166,7 +166,7 @@ module.exports.faqSave = async(req,res)=>{
 
         // Fetch Faq.....................................
 
-        let fileFaq = fs.readFileSync(process.cwd()+'/faq.yml', 'utf8');
+        let fileFaq = fs.readFileSync(process.env.modelfile+'/data/faq.yml', 'utf8');
         let faqData = yaml.load(fileFaq);
         let faqName = 'faq/'+req.body.faqName;
         let faqs = {'intent':faqName};
@@ -190,7 +190,7 @@ module.exports.faqSave = async(req,res)=>{
         
         //Write faqs to faq.yml.................................
         
-        fs.writeFile(process.cwd()+'/faq.yml', yaml.dump(faqData), (err) => {
+        fs.writeFile(process.env.modelfile+'/data/faq.yml', yaml.dump(faqData), (err) => {
             if (err) {
                 console.log("Can not write to the nlu file")
                 console.log(err);
@@ -199,7 +199,7 @@ module.exports.faqSave = async(req,res)=>{
 
         //Write Response to domain.yml.......................... 
 
-        fs.writeFile(process.cwd()+'/domain.yml', yaml.dump(domainData), (err) => {
+        fs.writeFile(process.env.modelfile+'/domain.yml', yaml.dump(domainData), (err) => {
             if (err) {
                 console.log("Can not write to the domain file")
                 console.log(err);
