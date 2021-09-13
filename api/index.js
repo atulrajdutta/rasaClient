@@ -8,5 +8,6 @@ router.post('/model',controller.useTrainedModel);
 router.get('/model/list',controller.modelList);
 router.post('/faqData',controller.faqIntent);
 router.post('/faqData/save',controller.faqSave);
+router.post('/faqData/delete',controller.faqDelete);
 // router.post('/model',controller.useTrainedModel);
 module.exports = router;

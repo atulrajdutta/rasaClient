@@ -214,3 +214,52 @@ module.exports.faqSave = async(req,res)=>{
 
     }
 }
+
+module.exports.faqDelete = async(req,res)=>{
+    try {
+        let filedomain = fs.readFileSync(process.env.modelfile+'domain.yml', 'utf8');
+        let domainData = yaml.load(filedomain);
+        let domainName = 'utter_faq/'+req.body.faqName;
+        // let resText = {'text':req.body.response};        
+        delete domainData["responses"][domainName]
+        // console.log(domainData)
+
+        let fileFaq = fs.readFileSync(process.env.modelfile+'data/faq.yml', 'utf8');
+        let faqData = yaml.load(fileFaq);
+        // let faqName = 'faq/'+req.body.faqName;
+        let faqKey = faqData["nlu"];
+        for (var i = 0; i < faqKey.length; i++) {
+            if (faqKey[i]['intent'] == 'faq/'+req.body.faqName){
+                delete faqKey[i]
+            faqData["nlu"] = faqData["nlu"].filter(function(e) {return e != null});
+            console.log(faqData["nlu"]);
+                
+
+        
+            }}
+            // if (Object.keys(faqKey) == 'null'){ 
+            //     delete faqKey['null'];
+
+            // }
+        
+        
+        fs.writeFile(process.env.modelfile+'domain.yml', yaml.dump(domainData), (err) => {
+            if (err) {
+                console.log("Can not write to the file")
+                console.log(err);
+            }
+        });
+
+        fs.writeFile(process.env.modelfile+'data/faq.yml', yaml.dump(faqData), (err) => {
+            if (err) {
+                console.log("Can not write to the file")
+                console.log(err);
+            }
+        });
+        res.send({success:true,message:"Response Saved!"})
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({success:false,error:error})
+
+    }
+}
