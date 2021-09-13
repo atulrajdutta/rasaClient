@@ -256,7 +256,7 @@ module.exports.faqDelete = async(req,res)=>{
                 console.log(err);
             }
         });
-        res.send({success:true,message:"Response Saved!"})
+        res.send({success:true,message:"Intent Deleted Successfully"})
     } catch (error) {
         console.log(error);
         res.status(400).send({success:false,error:error})
